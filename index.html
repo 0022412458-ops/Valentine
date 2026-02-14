@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Happy Valentine My Love 💖</title>
+    <!-- Font chữ -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CSS CHO PHẦN INTRO (HỒNG) --- */
+        :root { 
+            --pink: #ffb6c1; --dark-pink: #ff6b81; --red: #ff4d6d; --white: #ffffff; 
+            --shadow: 0 4px 15px rgba(255, 77, 109, 0.4); 
+            --primary-pink: #ff69b4; --deep-pink: #ff1493; --soft-pink: #ffb7c5;
+            --heart-path: path('M100 28.6942C79.826 3.86432 46.3684 -5.59968 20.8415 8.79932C-4.68538 23.1983 -6.64968 59.9077 14.1687 90.7188C31.4589 116.31 100 171.389 100 171.389C100 171.389 168.541 116.31 185.831 90.7188C206.65 59.9077 204.685 23.1983 179.158 8.79932C153.632 -5.59968 120.174 3.86432 100 28.6942Z');
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Nunito', sans-serif; 
+            background: linear-gradient(135deg, #ffe6eb 0%, #ffb6c1 100%);
+            min-height: 100vh; overflow: hidden; color: #444; 
+            position: relative;
+            transition: background 1s ease;
+        }
+
+        body.dark-mode { background: #050005; }
+
+        .bg-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; transition: opacity 1s ease; }
+        .bg-heart { position: absolute; color: rgba(255, 255, 255, 0.6); font-size: 20px; animation: floatUp linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
+        
+        .container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; width: 90%; max-width: 600px; text-align: center; background: rgba(255, 255, 255, 0.9);
+            padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--white);
+            backdrop-filter: blur(5px); transition: all 0.8s ease-out;
+        }
+        .container.hide-ui { opacity: 0; transform: translate(-50%, -50%) scale(0.8); pointer-events: none; }
+        
+        h1, h2 { font-family: 'Dancing Script', cursive; color: var(--red); text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        h1 { font-size: 3rem; margin-bottom: 20px; }
+        h2 { font-size: 2.2rem; margin-bottom: 15px; }
+        
+        .btn {
+            display: inline-block; padding: 12px 30px; font-size: 1.2rem; color: var(--white); background: var(--red);
+            border: none; border-radius: 50px; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.3s, background 0.3s;
+            font-family: 'Nunito', sans-serif; font-weight: bold; margin: 10px;
+        }
+        
+        .btn-outline { background: var(--white); color: var(--red); border: 2px solid var(--red); }
+        
+        .section { display: none; animation: fadeIn 0.8s ease-in-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .big-heart { font-size: 5rem; color: var(--red); animation: heartbeat 1.2s infinite; margin-bottom: 20px; display: block; }
+        .typing-text { border-right: 3px solid var(--red); white-space: pre-wrap; overflow: hidden; display: inline-block; width: 100%; min-height: 60px; }
+        .gallery { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+        .photo-frame { width: 120px; height: 120px; border-radius: 15px; overflow: hidden; border: 3px solid var(--pink); box-shadow: var(--shadow); transition: transform 0.3s; position: relative; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-frame:hover { transform: scale(1.2) rotate(-5deg); z-index: 5; }
+        .counter-box { background: #fff0f3; padding: 15px; border-radius: 15px; margin: 20px 0; border: 1px dashed var(--red); }
+        .counter-number { font-size: 1.5rem; font-weight: bold; color: var(--red); }
+        
+        /* Cải tiến khu vực nút bấm để tránh bị che khuất khi chạy */
+        .game-area { 
+            position: relative; 
+            height: 250px; 
+            width: 100%;
+            margin-top: 20px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        #btnNo { 
+            position: absolute; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 100;
+            white-space: nowrap;
+        }
+        
+        #final-message-container {
+            position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; z-index: 15; display: none; width: 100%; transition: opacity 1s ease;
+        }
+        .final-big-text { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--red); text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8); animation: heartbeat 1.5s infinite; }
+        .confetti-heart { position: fixed; top: -10px; color: var(--red); font-size: 25px; z-index: 100; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+
+        /* --- 2. CSS CHO VŨ TRỤ 3D --- */
+        #universe {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 200; display: none; opacity: 0; transition: opacity 2s ease-in;
+        }
+
+        #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        .scene {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1200px; z-index: 2; overflow: hidden; cursor: grab;
+        }
+        .scene:active { cursor: grabbing; }
+
+        #world { position: absolute; transform-style: preserve-3d; width: 0; height: 0; }
+
+        .heart-3d-object {
+            position: absolute; top: -100px; left: -100px; width: 200px; height: 200px;
+            transform-style: preserve-3d; animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        .heart-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: var(--heart-path); backface-visibility: visible; }
+        .heart-layer.side { background: linear-gradient(to bottom, var(--deep-pink), var(--dark-pink)); border: 1px solid rgba(255,20,147,0.3); }
+        .heart-layer.face { background: #000; overflow: hidden; box-shadow: 0 0 20px var(--deep-pink); }
+
+        .face-border { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, var(--deep-pink), #fff, var(--primary-pink)); z-index: 1; }
+        .face-img-container { position: absolute; top: 3%; left: 3%; width: 94%; height: 94%; background: #000; clip-path: var(--heart-path); z-index: 2; overflow: hidden; }
+        .heart-img { width: 100%; height: 100%; object-fit: cover; }
+        .shine-overlay { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 3s infinite; pointer-events: none; }
+
+        .rings-plane { position: absolute; top: 0; left: 0; transform-style: preserve-3d; transform: rotateX(90deg); }
+        .ring { position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; border-radius: 50%; border: 1px solid rgba(255, 105, 180, 0.2); box-shadow: 0 0 15px rgba(255, 20, 147, 0.15); }
+        .char { position: absolute; font-size: 18px; font-weight: bold; color: var(--soft-pink); text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 8px var(--deep-pink), 0 0 15px var(--primary-pink); backface-visibility: visible; }
+
+        #instructions { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); color: rgba(255, 183, 197, 0.7); font-size: 12px; text-align: center; pointer-events: none; user-select: none; z-index: 10; }
+        #music-control { position: absolute; bottom: 20px; right: 20px; z-index: 100; color: var(--soft-pink); cursor: pointer; border: 2px solid var(--primary-pink); padding: 8px 15px; border-radius: 20px; background: rgba(50, 0, 20, 0.6); font-size: 14px; font-weight: bold; transition: all 0.3s; box-shadow: 0 0 15px rgba(255, 105, 180, 0.5); animation: pulseBtn 2s infinite; }
+
+        @keyframes heartbeat { 0% { transform: scale3d(1, 1, 1); } 15% { transform: scale3d(1.1, 1.1, 1.1); } 30% { transform: scale3d(1, 1, 1); } 45% { transform: scale3d(1.05, 1.05, 1.05); } 60% { transform: scale3d(1, 1, 1); } 100% { transform: scale3d(1, 1, 1); } }
+        @keyframes shine { 0% { transform: translate(-30%, -30%) rotate(45deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: translate(30%, 30%) rotate(45deg); opacity: 0; } }
+        @keyframes spin-right { from { transform: translate(-50%, -50%) rotateZ(0deg); } to { transform: translate(-50%, -50%) rotateZ(360deg); } }
+        @keyframes spin-left { from { transform: translate(-50%, -50%) rotateZ(360deg); } to { transform: translate(-50%, -50%) rotateZ(0deg); } }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 15px rgba(255,105,180,0.5); } 50% { box-shadow: 0 0 25px rgba(255,20,147,0.8); } 100% { box-shadow: 0 0 15px rgba(255,105,180,0.5); } }
+
+        audio { display: none; }
+    </style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="bg-hearts" id="bgHearts"></div>
+
+<div id="universe">
+    <canvas id="starfield"></canvas>
+    <div class="scene" id="scene-container">
+        <div id="world">
+            <div class="heart-3d-object" id="heart-3d"></div>
+            <div class="rings-plane" id="rings-plane"></div>
+        </div>
+    </div>
+    <div id="instructions">🖱️ XOAY - DI CHUYỂN - ZOOM<br>(Chạm để tương tác)</div>
+    <div id="music-control">🌸 Bật Nhạc Tình Yêu 🌸</div>
+</div>
+
+<div id="final-message-container">
+    <div class="final-big-text">Anh cũng yêu em! ❤️</div>
+</div>
+
+<div class="container" id="mainContainer">
+    <div id="section-welcome" class="section active">
+        <span class="big-heart">💖</span>
+        <h1>Happy Valentine My Love</h1>
+        <p>Có một món quà bí mật dành cho em nè!</p>
+        <button class="btn" onclick="openGift()">💌 Mở quà đi bé</button>
+        <br><small style="color: #888; margin-top: 10px;">(Nhớ bật loa lên nhé 🔊)</small>
+    </div>
+
+    <div id="section-content" class="section">
+        <h2>Gửi công chúa của anh 💕</h2>
+        <div class="typing-text" id="typingText"></div>
+        <div class="gallery">
+            <div class="photo-frame"><img src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400" alt="Ảnh 1"></div>
+            <div class="photo-frame"><img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400" alt="Ảnh 2"></div>
+            <div class="photo-frame"><img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400" alt="Ảnh 3"></div>
+        </div>
+        <div class="counter-box">
+            <p>Chúng mình đã bên nhau được:</p>
+            <div class="counter-number" id="daysCount">0 ngày</div>
+        </div>
+        <button class="btn" onclick="goToGame()">Chơi game nhỏ nhé 👉</button>
+    </div>
+
+    <div id="section-game" class="section">
+        <h2>Câu hỏi quan trọng! 🧐</h2>
+        <p style="font-size: 1.3rem; margin: 20px 0;">Em có yêu anh nhiều hông?</p>
+        <div class="game-area" id="gameArea">
+            <button class="btn" id="btnYes" onclick="acceptLove()">❤️ Có chứ, yêu lắm!</button>
+            <button class="btn btn-outline" id="btnNo">💔 Không thèm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const startDate = new Date("2025-09-20"); // Chỉnh lại ngày của bạn
+    const audio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('music-control');
+    const btnNo = document.getElementById('btnNo');
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function openGift() {
+        toggleMusic(true);
+        showSection('section-content');
+        typeWriter();
+        calculateDays();
+    }
+
+    function toggleMusic(forcePlay = false) {
+        if (forcePlay || audio.paused) {
+            audio.play().then(() => {
+                musicBtn.innerText = "🌸 Đang phát nhạc..."; 
+            }).catch(e => console.log("Chờ tương tác"));
+        } else {
+            audio.pause();
+            musicBtn.innerText = "🔇 Đã tắt nhạc"; 
+        }
+    }
+    musicBtn.addEventListener('click', () => toggleMusic());
+
+    const textToType = "Cảm ơn em đã đến bên anh.\nValentine này, chúc em luôn xinh đẹp, hạnh phúc\nvà mãi là công chúa nhỏ của anh nhé! 🌹";
+    const typeElement = document.getElementById('typingText');
+    let i = 0;
+    function typeWriter() {
+        if (i < textToType.length) {
+            typeElement.innerHTML += textToType.charAt(i) === '\n' ? '<br>' : textToType.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+
+    function calculateDays() {
+        const today = new Date();
+        const diffTime = Math.abs(today - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        document.getElementById('daysCount').innerText = diffDays + " ngày";
+    }
+
+    function goToGame() {
+        showSection('section-game');
+    }
+
+    /* --- SỬA LẠI LOGIC NÚT BẤM --- */
+    function moveButton(e) {
+        // Lấy kích thước vùng game
+        const gameArea = document.getElementById('gameArea');
+        const areaRect = gameArea.getBoundingClientRect();
+        
+        // Kích thước của chính cái nút
+        const btnRect = btnNo.getBoundingClientRect();
+
+        // Tính toán giới hạn để nút không chạy ra khỏi vùng container
+        const maxX = areaRect.width - btnRect.width;
+        const maxY = areaRect.height - btnRect.height;
+
+        // Tạo vị trí ngẫu nhiên
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
+
+        // Áp dụng vị trí mới (vì là absolute nên so với gameArea)
+        btnNo.style.left = randomX + 'px';
+        btnNo.style.top = randomY + 'px';
+    }
+
+    // Chạy khi rê chuột qua (Desktop)
+    btnNo.addEventListener('mouseover', moveButton);
+    // Chạy khi chạm vào (Mobile)
+    btnNo.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Ngăn việc click vào nút
+        moveButton();
+    });
+    // Ngăn chặn việc click nếu người dùng "nhanh tay" bấm được
+    btnNo.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveButton();
+    });
+
+    function acceptLove() {
+        const container = document.getElementById('mainContainer');
+        const finalMsg = document.getElementById('final-message-container');
+        container.classList.add('hide-ui');
+        setTimeout(() => { finalMsg.style.display = 'block'; }, 500);
+        createFallingHearts();
+        setTimeout(() => {
+            finalMsg.style.opacity = '0';
+            document.getElementById('bgHearts').style.opacity = '0';
+            document.body.classList.add('dark-mode');
+            const hearts = document.querySelectorAll('.confetti-heart');
+            hearts.forEach(h => h.remove());
+            initUniverse();
+        }, 4000);
+    }
+
+    function createFallingHearts() {
+        let heartInterval = setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('confetti-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }, 100);
+        setTimeout(() => clearInterval(heartInterval), 4000);
+    }
+
+    function createBgHearts() {
+        const bg = document.getElementById('bgHearts');
+        for(let j=0; j<20; j++) {
+            const h = document.createElement('div');
+            h.classList.add('bg-heart');
+            h.innerHTML = Math.random() > 0.5 ? '💖' : '🌸';
+            h.style.left = Math.random() * 100 + '%';
+            h.style.animationDuration = Math.random() * 10 + 5 + 's';
+            h.style.fontSize = Math.random() * 20 + 10 + 'px';
+            bg.appendChild(h);
+        }
+    }
+    createBgHearts();
+
+    function initUniverse() {
+        const universeDiv = document.getElementById('universe');
+        universeDiv.style.display = 'block';
+        setTimeout(() => { universeDiv.style.opacity = '1'; }, 100);
+
+        const heartContainer = document.getElementById('heart-3d');
+        const layers = 30; 
+        const depth = 40; 
+        const step = depth / layers; 
+
+        for (let i = 0; i <= layers; i++) {
+            const layer = document.createElement('div');
+            const zPos = (i * step) - (depth / 2);
+            if (i === 0 || i === layers) {
+                layer.className = 'heart-layer face';
+                layer.innerHTML = `
+                    <div class="face-border"></div>
+                    <div class="face-img-container">
+                        <img src="https://i.pinimg.com/736x/4c/a3/13/4ca313d4e378d29c111a1a0f613b0aa3.jpg" class="heart-img">
+                        <div class="shine-overlay"></div>
+                    </div>
+                `;
+                if (i === 0) layer.style.transform = `translateZ(${zPos}px) rotateY(180deg)`;
+                else layer.style.transform = `translateZ(${zPos}px)`;
+            } else {
+                layer.className = 'heart-layer side';
+                layer.style.transform = `translateZ(${zPos}px)`;
+            }
+            heartContainer.appendChild(layer);
+        }
+
+        const scene = document.getElementById('scene-container');
+        const world = document.getElementById('world');
+        let state = { rotX: -20, rotY: 45, scale: 1, posX: 0, posY: 0, isDragging: false, lastMouseX: 0, lastMouseY: 0, button: 0 };
+
+        function updateTransform() {
+            state.scale = Math.min(Math.max(state.scale, 0.2), 3);
+            state.rotX = Math.min(Math.max(state.rotX, -90), 90);
+            world.style.transform = `translate3d(${state.posX}px, ${state.posY}px, 0) scale(${state.scale}) rotateX(${state.rotX}deg) rotateY(${state.rotY}deg)`;
+        }
+
+        scene.addEventListener('mousedown', e => { state.isDragging = true; state.lastMouseX = e.clientX; state.lastMouseY = e.clientY; state.button = e.button; });
+        window.addEventListener('mouseup', () => state.isDragging = false);
+        window.addEventListener('mousemove', e => {
+            if (!state.isDragging) return;
+            const dx = e.clientX - state.lastMouseX;
+            const dy = e.clientY - state.lastMouseY;
+            if (state.button === 0) { state.rotY += dx * 0.5; state.rotX -= dy * 0.5; }
+            else if (state.button === 2) { state.posX += dx; state.posY += dy; }
+            state.lastMouseX = e.clientX; state.lastMouseY = e.clientY;
+            requestAnimationFrame(updateTransform);
+        });
+        
+        scene.addEventListener('wheel', e => { e.preventDefault(); state.scale += -e.deltaY * 0.001 * state.scale; requestAnimationFrame(updateTransform); }, { passive: false });
+        updateTransform();
+
+        const ringSettings = [
+            { text: "ANH YÊU EM MÃI MÃI ❤️ HAPPY VALENTINE'S DAY ❤️", radius: 350, speed: 30, direction: 'normal', fontSize: 22 },
+            { text: "CÔNG CHÚA CỦA ANH 👑 NGỌT NGÀO NHƯ KẸO BÔNG 🍬", radius: 260, speed: 25, direction: 'reverse', fontSize: 18 },
+            { text: "14.02 - LOVE YOU TO THE MOON & BACK - 14.02", radius: 190, speed: 20, direction: 'normal', fontSize: 14 }
+        ];
+
+        const plane = document.getElementById('rings-plane');
+        ringSettings.forEach(setting => {
+            const ring = document.createElement('div');
+            ring.className = 'ring';
+            ring.style.width = (setting.radius * 2) + 'px';
+            ring.style.height = (setting.radius * 2) + 'px';
+            const dir = setting.direction === 'reverse' ? 'spin-left' : 'spin-right';
+            ring.style.animation = `${dir} ${setting.speed}s linear infinite`;
+
+            const chars = setting.text.split('');
+            const angleStep = 360 / chars.length;
+            chars.forEach((char, index) => {
+                const s = document.createElement('span');
+                s.innerText = char; s.className = 'char';
+                s.style.fontSize = setting.fontSize + 'px';
+                s.style.height = setting.radius + 'px';
+                s.style.transformOrigin = `0 ${setting.radius}px`;
+                s.style.transform = `rotate(${index * angleStep}deg)`;
+                s.style.left = '50%'; s.style.top = '0';
+                ring.appendChild(s);
+            });
+            plane.appendChild(ring);
+        });
+
+        const cvs = document.getElementById('starfield'); 
+        const ctx = cvs.getContext('2d');
+        let canvasWidth, canvasHeight, stars=[]; 
+
+        function resize(){ 
+            canvasWidth = window.innerWidth; canvasHeight = window.innerHeight; 
+            cvs.width = canvasWidth; cvs.height = canvasHeight; 
+        }
+        window.addEventListener('resize', resize); 
+        resize();
+
+        for(let i=0; i<200; i++) {
+            stars.push({
+                x: Math.random() * canvasWidth, y: Math.random() * canvasHeight, 
+                size: Math.random() * 2, speed: Math.random() * 0.5 + 0.2, 
+                o: Math.random(), fd: 0.01
+            });
+        }
+
+        function starLoop(){
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            const g = ctx.createRadialGradient(canvasWidth/2, canvasHeight/2, 0, canvasWidth/2, canvasHeight/2, canvasWidth);
+            g.addColorStop(0, '#1a001a'); g.addColorStop(1, '#000000');
+            ctx.fillStyle = g; ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+            stars.forEach(s => {
+                s.y -= s.speed; s.o += s.fd; 
+                if(s.o > 1 || s.o < 0.2) s.fd = -s.fd; 
+                if(s.y < 0) { s.x = Math.random() * canvasWidth; s.y = canvasHeight; }
+                ctx.fillStyle = `rgba(255,192,203,${s.o})`; 
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+            });
+            requestAnimationFrame(starLoop);
+        }
+        starLoop();
+    }
+</script>
+</body>
+</html>
